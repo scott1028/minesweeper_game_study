@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="jquery-1.11.0.min.js"></script>
+</head>
+<body>
+	<table border=1 width="800" height="600">
+		<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+		<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+		<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+		<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+		<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+		<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+		<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+		<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+	</table>
+
+	<script>
+		var tds = $('table td').css({
+			'text-align': 'center',
+			'table-layout': 'fixed',
+			'cursor': 'pointer'
+		});
+		for(var td in tds){
+			var v=Math.round(Math.random()*10);
+			if(v<5){
+				$('table td:eq(' + td + ')').attr('flag', '*').html('*');
+			}
+			else{
+				$('table td:eq(' + td + ')').attr('flag', '-').html('-');
+			}
+			// 計算順序、紀錄作標等
+			$('table td:eq(' + td + ')').attr('index', td);
+			$('table td:eq(' + td + ')').attr('x', parseInt(td) % 8);
+			$('table td:eq(' + td + ')').attr('y', Math.floor(parseInt(td)/8));
+		}
+	</script>
+
+	<script>
+		var touch_bomb = function(e, t, opened){
+			// init
+			var _opened;
+			if(opened){
+				_opened = opened
+			}
+			else{
+				_opened = [];
+			}
+
+			var _t;
+			if(t){
+				_t = t;
+			}
+			else{
+				_t = e.target;
+			}
+
+			// 計算位置與判斷是否地雷、與是否踩過
+			var td = $(_t);
+			if(td.length==0){
+				// 當這個座標根本沒物件的實後結束程式
+			}
+			else{
+				var x = parseInt(td.attr('x'));
+				var y = parseInt(td.attr('y'));
+				var bomb = td.attr('flag');
+				// 如果沒踩過的座標
+				if(_opened.indexOf(x+','+y)==-1){
+					// 先登記已踩過
+					_opened.push(x+','+y);
+					
+					if(bomb=='*'){
+						console.log('*'+' at '+x+','+y);
+					}
+					else{
+						td.css('background-color','silver');
+
+						// 計算出週圍座標
+						var up=$('td[x='+(x+0)+'][y='+(y-1)+']');
+						var down=$('td[x='+(x+0)+'][y='+(y+1)+']');
+						var left=$('td[x='+(x-1)+'][y='+(y+0)+']');
+						var right=$('td[x='+(x+1)+'][y='+(y+0)+']');
+
+						// 偵測周圍的地雷(遞迴, 上下左右)
+						touch_bomb(undefined, up, _opened);
+						touch_bomb(undefined, down, _opened);
+						touch_bomb(undefined, left, _opened);
+						touch_bomb(undefined, right, _opened);
+					}	
+				}
+			}
+
+			return;
+		}
+
+		tds.click(touch_bomb)
+	</script>
+</body>
+</html>
