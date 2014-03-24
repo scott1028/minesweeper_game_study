@@ -40,7 +40,7 @@
 
 	<script>
 		var touch_bomb = function(e, t, opened){
-			// init
+			// init_1
 			var _opened;
 			if(opened){
 				_opened = opened
@@ -49,6 +49,7 @@
 				_opened = [];
 			}
 
+			// init_2
 			var _t;
 			if(t){
 				_t = t;
@@ -57,20 +58,21 @@
 				_t = e.target;
 			}
 
-			// 計算位置與判斷是否地雷、與是否踩過
 			var td = $(_t);
 			if(td.length==0){
-				// 當這個座標根本沒物件的實後結束程式
+				// 當這個座標根本沒物件的時候結束程式
 			}
 			else{
 				var x = parseInt(td.attr('x'));
 				var y = parseInt(td.attr('y'));
 				var bomb = td.attr('flag');
+				
 				// 如果沒踩過的座標
 				if(_opened.indexOf(x+','+y)==-1){
 					// 先登記已踩過
 					_opened.push(x+','+y);
 					
+					// 如果是地雷就結束遞迴呼叫
 					if(bomb=='*'){
 						console.log('*'+' at '+x+','+y);
 					}
